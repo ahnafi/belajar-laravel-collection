@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Data\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -41,6 +42,66 @@ class CollectionTest extends TestCase
 
         $put = $collection->put("a", 1);
         self::assertEquals([0, 1, "a" => 1], $put->all());
+    }
+
+    function testMap()
+    {
+        $collection = collect([1, 2, 3]);
+        $result = $collection->map(function ($item) {
+            return $item * 2;
+        });
+        self::assertEquals([2, 4, 6], $result->all());
+    }
+
+    public function testMapInto()
+    {
+        $collection = collect(["budi"]);
+        $res = $collection->mapInto(Person::class);
+        self::assertEquals([new Person("budi")], $res->all());
+    }
+
+    function testMapSpread()
+    {
+        $collection = collect([["budiono", "siregar"], ["alex", 'budiman']]);
+        $res = $collection->mapSpread(function ($firstName, $lastName) {
+            return new Person($firstName . " " . $lastName);
+        });
+
+        self::assertEquals([
+            new Person("budiono siregar"),
+            new Person("alex budiman"),
+        ],
+            $res->all()
+        );
+    }
+
+    function testMapsToGroup()
+    {
+        $collection = collect([
+            [
+                "name" => "budiono",
+                "department" => "IT"
+            ],
+            [
+                "name" => "sebas",
+                "department" => "IT"
+            ],
+            [
+                "name" => "alex",
+                "department" => "HR"
+            ]
+        ]);
+
+        $res = $collection->mapToGroups(function ($item) {
+            return [$item["department"] => $item["name"]];
+        });
+
+        self::assertEquals(
+            [
+                "IT" => collect(["budiono","sebas"]),
+                "HR" => collect(["alex"])
+            ]
+            , $res->all());
     }
 
 }
