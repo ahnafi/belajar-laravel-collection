@@ -98,10 +98,53 @@ class CollectionTest extends TestCase
 
         self::assertEquals(
             [
-                "IT" => collect(["budiono","sebas"]),
+                "IT" => collect(["budiono", "sebas"]),
                 "HR" => collect(["alex"])
             ]
             , $res->all());
+    }
+
+    function testZip()
+    {
+        $collection1 = collect([1, 2, 3]);
+        $collection2 = collect([4, 5, 6]);
+        $collection3 = $collection1->zip($collection2);
+
+        self::assertEquals(
+            [
+                collect([1, 4]),
+                collect([2, 5]),
+                collect([3, 6]),
+            ],
+            $collection3->all()
+        );
+    }
+
+    function testConcat()
+    {
+        $collection1 = collect([1, 2, 3]);
+        $collection2 = collect([4, 5, 6]);
+        $collection3 = $collection1->concat($collection2);
+
+        self::assertEquals(
+            [1, 2, 3, 4, 5, 6],
+            $collection3->all()
+        );
+    }
+
+    function testCombine()
+    {
+        $collection1 = ["name", "country"];
+        $collection2 = ["budiono", "Indonesia"];
+        $collection3 = collect($collection1)->combine($collection2);
+
+        self::assertEquals(
+            [
+                "name" => "budiono",
+                "country" => "Indonesia"
+            ],
+            $collection3->all()
+        );
     }
 
 }
