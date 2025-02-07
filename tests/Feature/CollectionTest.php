@@ -147,4 +147,36 @@ class CollectionTest extends TestCase
         );
     }
 
+    function testCollapse()
+    {
+        $collection = collect([
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+        ]);
+
+        $result = $collection->collapse();
+        self::assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9], $result->all());
+    }
+
+    function testFlatMap()
+    {
+        $collection = collect([
+            [
+                "name" => "budi",
+                "hobbies" => ["berenang", 'football']
+            ],
+            [
+                "name" => "ani",
+                "hobbies" => ["memasak", 'menulis']
+            ],
+        ]);
+
+        $result = $collection->flatMap(function ($item) {
+            return $item["hobbies"];
+        });
+
+        self::assertEquals(["berenang", 'football', "memasak", 'menulis'], $result->all());
+    }
+
 }
