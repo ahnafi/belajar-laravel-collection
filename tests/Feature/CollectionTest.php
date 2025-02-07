@@ -179,4 +179,16 @@ class CollectionTest extends TestCase
         self::assertEquals(["berenang", 'football', "memasak", 'menulis'], $result->all());
     }
 
+    function testJoin()
+    {
+        // string representation -> mengubah collection menjadi string
+        $collection = collect(["budi", "ono", "siregar"]);
+
+        $result = $collection->join('-');
+        self::assertEquals("budi-ono-siregar", $result);
+
+        $result = $collection->join("_", "-");
+        self::assertEquals("budi_ono-siregar", $result);
+    }
+
 }
