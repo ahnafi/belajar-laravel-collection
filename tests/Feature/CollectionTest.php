@@ -236,4 +236,14 @@ class CollectionTest extends TestCase
 
     }
 
+    public function testTesting()
+    {
+        $collection = collect(["budiono", "siregar", "xyz"]);
+        self::assertTrue($collection->contains("budiono"));
+        self::assertTrue($collection->contains(function ($value, $key) {
+            return $value === "xyz";
+        }));
+        
+    }
+
 }
