@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Data\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class CollectionTest extends TestCase
@@ -35,7 +36,7 @@ class CollectionTest extends TestCase
 
         $prepend = $collection->prepend(0);
         self::assertEquals([0, 1, 2], $prepend->all());
-//        self::assertEqualsCanonicalizing([1, 2], $collection->all());
+        //        self::assertEqualsCanonicalizing([1, 2], $collection->all());
 
         $pull = $prepend->pull(2);
         self::assertEquals(2, $pull);
@@ -67,10 +68,11 @@ class CollectionTest extends TestCase
             return new Person($firstName . " " . $lastName);
         });
 
-        self::assertEquals([
-            new Person("budiono siregar"),
-            new Person("alex budiman"),
-        ],
+        self::assertEquals(
+            [
+                new Person("budiono siregar"),
+                new Person("alex budiman"),
+            ],
             $res->all()
         );
     }
@@ -101,7 +103,9 @@ class CollectionTest extends TestCase
                 "IT" => collect(["budiono", "sebas"]),
                 "HR" => collect(["alex"])
             ]
-            , $res->all());
+            ,
+            $res->all()
+        );
     }
 
     function testZip()
@@ -189,6 +193,24 @@ class CollectionTest extends TestCase
 
         $result = $collection->join("_", "-");
         self::assertEquals("budi_ono-siregar", $result);
+    }
+
+    function testFilter()
+    {
+        $collection = collect([
+            "eko" => 100,
+            "budi" => 200,
+            "joko" => 300,
+        ]);
+
+        $result = $collection->filter(function ($item, $key) {
+            return $item >= 150;
+        });
+
+        self::assertEquals([
+            "budi" => 200,
+            "joko" => 300,
+        ], $result->all());
     }
 
 }
