@@ -213,4 +213,27 @@ class CollectionTest extends TestCase
         ], $result->all());
     }
 
+    public function testPartitioning()
+    {
+        $collection = collect([
+            "eko" => 100,
+            "budi" => 200,
+            "joko" => 300,
+        ]);
+
+        [$result1, $result2] = $collection->partition(function ($item, $key) {
+            return $item >= 150;
+        });
+
+        self::assertEquals([
+            "budi" => 200,
+            "joko" => 300,
+        ], $result1->all());
+
+        self::assertEquals(expected: [
+            "eko" => 100,
+        ], actual: $result2->all());
+
+    }
+
 }
