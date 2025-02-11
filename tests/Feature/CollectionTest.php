@@ -243,7 +243,45 @@ class CollectionTest extends TestCase
         self::assertTrue($collection->contains(function ($value, $key) {
             return $value === "xyz";
         }));
-        
+
+    }
+
+    public function testGrouping()
+    {
+        $collection = collect([
+            [
+                "name" => "budi",
+                "departement" => "IT"
+            ],
+            [
+                "name" => "andi",
+                "departement" => "IT"
+            ],
+            [
+                "name" => "ani",
+                "departement" => "HR"
+            ],
+        ]);
+
+        $result = $collection->groupBy("departement");
+        self::assertEquals([
+            "IT" => collect([
+                [
+                    "name" => "budi",
+                    "departement" => "IT"
+                ],
+                [
+                    "name" => "andi",
+                    "departement" => "IT"
+                ],
+            ]),
+            "HR" => collect([
+                [
+                    "name" => "ani",
+                    "departement" => "HR"
+                ]
+            ])
+        ], $result->all());
     }
 
 }
