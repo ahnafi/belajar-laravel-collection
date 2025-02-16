@@ -6,6 +6,7 @@ use App\Data\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Attributes\UsesFunction;
 use Tests\TestCase;
 
 class CollectionTest extends TestCase
@@ -292,6 +293,43 @@ class CollectionTest extends TestCase
 
         $result = $collection->slice(6, 2);
         self::assertEqualsCanonicalizing([7, 8], $result->all());
+    }
+
+    public function testTake()
+    {
+        $collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+        $result = $collection->take(4);
+        self::assertEqualsCanonicalizing([1, 2, 3, 4], $result->all());
+
+        $result = $collection->takeUntil(function ($x) {
+            return 4 == $x;
+        });
+        self::assertEqualsCanonicalizing([1, 2, 3], $result->all());
+
+        $result = $collection->takeWhile(function ($x) {
+            return $x <= 4;
+        });
+        self::assertEqualsCanonicalizing([1, 2, 3, 4], $result->all());
+
+    }
+    public function testSkip()
+    {
+        $collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+        $result = $collection->skip(4);
+        self::assertEqualsCanonicalizing([5, 6, 7, 8, 9], $result->all());
+
+        $result = $collection->skipUntil(function ($x) {
+            return 4 == $x;
+        });
+        self::assertEqualsCanonicalizing([4, 5, 6, 7, 8, 9], $result->all());
+
+        $result = $collection->skipWhile(function ($x) {
+            return $x <= 4;
+        });
+        self::assertEqualsCanonicalizing([5, 6, 7, 8, 9], $result->all());
+
     }
 
 }
